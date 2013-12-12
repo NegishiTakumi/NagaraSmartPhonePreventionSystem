@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">NagaraSmartPhonePreventionSystem</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <color name="default_color">#00000000</color>
+    <color name="debugColor">#44FF0000</color>
+    <color name="bg20">#33000000</color>
+    <color name="bg40">#66000000</color>
+    <color name="bg60">#99000000</color>
+    <color name="bg80">#CC000000</color>
+    <color name="bg90">#EE000000</color>
+</resources>

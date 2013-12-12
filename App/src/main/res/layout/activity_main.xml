@@ -1,0 +1,57 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.grad.nagara.MainActivity"
+    tools:ignore="MergeRootFrame" >
+
+    <TextView
+        android:layout_width="110dp"
+        android:layout_height="146dp"
+        android:text="GPS"
+        android:id="@+id/gpsTextView"
+        android:layout_gravity="left|top" />
+
+    <TextView
+        android:layout_width="105dp"
+        android:layout_height="145dp"
+        android:text="New Text"
+        android:id="@+id/distTextView"
+        android:layout_gravity="center_horizontal|top" />
+
+    <TextView
+        android:layout_width="168dp"
+        android:layout_height="146dp"
+        android:text="New Text"
+        android:id="@+id/acceTextView"
+        android:layout_gravity="left|center_vertical" />
+
+    <TextView
+        android:layout_width="158dp"
+        android:layout_height="120dp"
+        android:text="New Text"
+        android:id="@+id/NatralizedTextView"
+        android:layout_gravity="center" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:id="@+id/StopButton"
+        android:layout_gravity="left|bottom" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:id="@+id/debugButton"
+        android:layout_gravity="right|bottom" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="薄くする"
+        android:id="@+id/paleButton"
+        android:layout_gravity="center_horizontal|bottom" />
+    </FrameLayout>

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.grad.nagara.MainActivity"
+    android:background="@color/bg20"
     tools:ignore="MergeRootFrame" >
 
     <TextView
@@ -28,8 +29,8 @@
         android:layout_gravity="left|center_vertical" />
 
     <TextView
-        android:layout_width="158dp"
-        android:layout_height="120dp"
+        android:layout_width="115dp"
+        android:layout_height="153dp"
         android:text="New Text"
         android:id="@+id/NatralizedTextView"
         android:layout_gravity="center" />
@@ -51,7 +52,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="薄くする"
+        android:text="Random"
         android:id="@+id/paleButton"
         android:layout_gravity="center_horizontal|bottom" />
     </FrameLayout>

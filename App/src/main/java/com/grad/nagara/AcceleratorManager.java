@@ -35,10 +35,6 @@ public class AcceleratorManager  {
     FeatureValue f2 = new FeatureValue();
 
 
-    public FeatureValue naturalizedData_SVM = new FeatureValue();
-    public FeatureValue getDataForSVM(){ return naturalizedData_SVM;}
-
-
     public AcceleratorManager(TextView acceTv,SensorManager manager){
         textView = acceTv; //加速度を書くTextViewをセット
         this.manager = manager;
@@ -134,9 +130,16 @@ public class AcceleratorManager  {
 
     private void setFeatureValueData(FeatureValue fv,float[] fvSet){
         //FeatureValue fv = new FeatureValue();
-        fv.max = ExCalc.GetArrMax(fvSet);
         fv.min = ExCalc.GetArrMin(fvSet);
+        fv.max = ExCalc.GetArrMax(fvSet);
         fv.avr = ExCalc.GetArrAvr(fvSet);
         fv.var = ExCalc.GetArrVar(fvSet);
+    }
+    public FeatureValue getF1(int i){
+       if(i ==1)
+        return f1;
+        if(i==2)
+            return f2;
+        return null;
     }
 }

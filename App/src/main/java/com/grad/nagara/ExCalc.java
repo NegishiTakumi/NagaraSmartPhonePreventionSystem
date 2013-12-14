@@ -1,5 +1,7 @@
 package com.grad.nagara;
 
+import android.util.Log;
+
 import java.util.Arrays;
 
 /**
@@ -7,15 +9,6 @@ import java.util.Arrays;
  * 配列操作プログラム(LINQに相当するもの)の実装
  */
 public class ExCalc {
-    /*配列が全て値が入っているか確かめる。
-    * --------------------------------------------------------*/
-
-    /*public static boolean isAcceRawDataSetFull(AcceRawData[] data){
-        for(AcceRawData ard:data){
-            if(ard.isDataNotInserted()) return false;
-        }
-        return true;
-    }*/
 
     /*配列の合計を返す
     * --------------------------------------------------------*/
@@ -27,14 +20,22 @@ public class ExCalc {
     /*配列の最大値を返す
     * --------------------------------------------------------*/
     public static float GetArrMax(float[] arr){
-        Arrays.sort(arr);
-        return arr[arr.length-1];
+        float tmp = -1000;
+        for(float f : arr){
+            tmp = Math.max(tmp,f);
+        }
+
+        return tmp;
     }
     /*配列の最小値を返す
 * --------------------------------------------------------*/
     public static float GetArrMin(float[] arr){
-        Arrays.sort(arr);
-        return arr[0];
+        float tmp = 1000;
+        for(float f : arr){
+            tmp = Math.min(tmp,f);
+        }
+
+        return tmp;
     }
     /*配列の分散を返す。
 * --------------------------------------------------------*/

@@ -2,6 +2,8 @@ package com.grad.nagara;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.IntentService;
+import android.app.Service;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -45,6 +47,7 @@ public class LatlngManager extends Activity {
         public tLocationListener(MainActivity ma){
             this.ma = ma;
         }
+        public tLocationListener(){}
         //GPSの値が代わった場合
         public void onLocationChanged(Location lc){
             nexttime = starttime;

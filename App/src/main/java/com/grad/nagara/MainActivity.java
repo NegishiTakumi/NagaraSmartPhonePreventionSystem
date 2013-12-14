@@ -11,6 +11,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Environment;
 import android.provider.Settings;
 //import android.support.v4.widget.SearchViewCompatIcs;
 import android.text.Layout;
@@ -82,7 +83,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     public void onResume(){
         super.onResume();
         a_manager.onResume(this);
-        l_manager.onResume(this);
+       // l_manager.onResume(this);
     }
 
     @Override//SensorEventListener
@@ -121,20 +122,25 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         if(v == dbButton){
             startService(new Intent(MainActivity.this, NagaraLayerService.class));
             FlipButton();
-            Log.d("IntentTest", "StartIntent1 - cst");
         }
         if(v==stopButton){
             stopService(new Intent(MainActivity.this,NagaraLayerService.class));
             FlipButton();
-            Log.d("IntentTest", "StopIntent1&2 - cst");
         }
         if(v==paleButton){
             int i = new Random().nextInt(5);
-            Intent broadcastIntent = new Intent();
-            broadcastIntent.putExtra("colorMode", i);
-            Log.d(TAG,i+"");
-            broadcastIntent.setAction("MY_ACTION");
-            getBaseContext().sendBroadcast(broadcastIntent);
+           // Intent broadcastIntent = new Intent();
+           // broadcastIntent.putExtra("colorMode", i);
+           // Log.d(TAG,i+"");
+           // broadcastIntent.setAction("MY_ACTION");
+          //  getBaseContext().sendBroadcast(broadcastIntent);
+
+           FeatureValue f = a_manager.getF1(1);
+           Debugger.Print(f.avr+","+f.var+","+f.max+","+f.min+"\n",1);
+           f = a_manager.getF1(2);
+           Debugger.Print(f.avr+","+f.var+","+f.max+","+f.min+"\n",2);
+
+            Log.d("_m_a",f.max + " / " + f.min);
         }
     }
 

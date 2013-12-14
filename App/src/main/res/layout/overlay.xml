@@ -11,7 +11,7 @@
     <TextView
         android:id="@+id/textView1"
         android:layout_width="605dp"
-        android:layout_height="956dp"
+        android:layout_height="373dp"
         android:text="           ながらスマートフォン検出中"
         android:textSize="32px"
         android:background="@color/default_color"

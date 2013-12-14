@@ -36,6 +36,7 @@ public class NagaraLayerService extends IntentService implements SensorEventList
     WindowManager.LayoutParams params;
     /*加速度センサー実装のための変数↓*/
     AcceleratorManager mAManager;
+    LatlngManager mLManager;
     SensorManager sensorManager;
     public static boolean isTest = false;
 
@@ -64,8 +65,6 @@ public class NagaraLayerService extends IntentService implements SensorEventList
 
     @Override
     public int onStartCommand(Intent intent,int flags, int startId){
-
-
         super.onStart(intent,startId);
         mView = LayoutInflater.from(this).inflate(R.layout.overlay,null);
 
@@ -140,7 +139,6 @@ public class NagaraLayerService extends IntentService implements SensorEventList
             }        */
                 try {
                     Thread.sleep(2000);
-                    Log.d(TAG,"Thread sleep");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -177,5 +175,4 @@ public class NagaraLayerService extends IntentService implements SensorEventList
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
 }

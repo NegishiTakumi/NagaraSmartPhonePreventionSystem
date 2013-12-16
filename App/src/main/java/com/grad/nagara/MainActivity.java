@@ -130,15 +130,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             FlipButton();
         }
         if(v==paleButton){
-            //int i = new Random().nextInt(5);
-           // Intent broadcastIntent = new Intent();
-           // broadcastIntent.putExtra("colorMode", i);
-           // Log.d(TAG,i+"");
-           // broadcastIntent.setAction("MY_ACTION");
-          //  getBaseContext().sendBroadcast(broadcastIntent);
 
-            SVMTester();
-           // RecordData();
         }
     }
     private void SVMTester(){

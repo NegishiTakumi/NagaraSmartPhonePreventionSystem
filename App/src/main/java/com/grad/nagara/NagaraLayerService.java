@@ -70,7 +70,7 @@ public class NagaraLayerService extends IntentService implements SensorEventList
 
         TextView textView = (TextView) mView.findViewById(R.id.textView1);
         sensorManager = (SensorManager)getApplicationContext().getSystemService(SENSOR_SERVICE);
-        mAManager = new AcceleratorManager(textView,sensorManager);
+        mAManager = new AcceleratorManager(textView,sensorManager,this);
         mAManager.onResume(this);
         mConfig.setColor(3);
         //int color = mConfig.getColor();

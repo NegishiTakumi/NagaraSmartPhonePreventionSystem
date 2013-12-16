@@ -30,6 +30,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.grad.nagara.libsvm.svm;
+
 import java.util.*;
 
 import static android.provider.Settings.*;
@@ -43,7 +45,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     private SensorManager manager;
     private AcceleratorManager a_manager;
     private LatlngManager l_manager;
-
+    private MySVMManager mSVM_manager;
     IntentFilter intentFilter;
     NagaraLayerReceiver receiver;
 
@@ -128,22 +130,57 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             FlipButton();
         }
         if(v==paleButton){
-            int i = new Random().nextInt(5);
+            //int i = new Random().nextInt(5);
            // Intent broadcastIntent = new Intent();
            // broadcastIntent.putExtra("colorMode", i);
            // Log.d(TAG,i+"");
            // broadcastIntent.setAction("MY_ACTION");
           //  getBaseContext().sendBroadcast(broadcastIntent);
 
-           FeatureValue f = a_manager.getF1(1);
-           Debugger.Print(f.avr+","+f.var+","+f.max+","+f.min+"\n",1);
-           f = a_manager.getF1(2);
-           Debugger.Print(f.avr+","+f.var+","+f.max+","+f.min+"\n",2);
-
-            Log.d("_m_a",f.max + " / " + f.min);
+            SVMTester();
+           // RecordData();
         }
     }
+    private void SVMTester(){
 
+
+        FeatureValue f1 = a_manager.getF1(1);
+        //str += "1:"+f1.var;
+        //Debugger.Print(classIndex+ " " + f.avr+","+f.var+","+f.max+","+f.min+"\n",1);
+        FeatureValue f2 = a_manager.getF1(2);
+        //str += " 2:"+ f.max + " 3:" + f.min + " 4:"+ f.var + "\n";
+      //  mSVM_manager = new MySVMManager(new float[]{f1.var,f2.max,f2.min,f2.var});
+      // Debugger.Print("1:"+f1.var +" 2:"+ f2.max + " 3:" + f2.min + " 4:"+ f2.var + " = " + mSVM_manager.getAccuration()+"\n","getAccurationData");
+        //int i = (int)mSVM_manager.getAccuration();
+        int temp = 0;
+        int i = 0;
+        if(f2.min < -25 && f2.max > 25 && f2.var > 300){
+            i = 3;
+        }
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.putExtra("colorMode", i);
+        broadcastIntent.setAction("MY_ACTION");
+        getBaseContext().sendBroadcast(broadcastIntent);
+            Log.d("_m_a",f2.min + "," + f2.max + "," + f2.var);
+//        Log.d("_m_a",mSVM_manager.getAccuration() + "");
+
+    }
+
+    private void RecordData(){
+        int classIndex = 2;
+        String str = classIndex + " ";
+
+        FeatureValue f = a_manager.getF1(1);
+        str += "1:"+f.var;
+
+
+        //Debugger.Print(classIndex+ " " + f.avr+","+f.var+","+f.max+","+f.min+"\n",1);
+        f = a_manager.getF1(2);
+        str += " 2:"+ f.max + " 3:" + f.min + " 4:"+ f.var + "\n";
+
+        Debugger.Print(str,"SeisiLog");
+        //Debugger.Print(f.avr+","+f.var+","+f.max+","+f.min+"\n",2);
+    }
     private void FlipButton(){
         boolean running = isServiceRunning(this);
         dbButton.setEnabled(!running);

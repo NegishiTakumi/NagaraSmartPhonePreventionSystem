@@ -26,11 +26,18 @@ import java.util.Scanner;
 public class Debugger {
     public static final String TAG = "__Debugger";
 
+    public static void MakeDirTest(){
+        String dstDir = Environment.getExternalStorageDirectory().getPath();
+        File file = new File(dstDir+"/nagaraData/test.txt");
+
+        file.getParentFile().mkdir();
+    }
+
     @TargetApi(Build.VERSION_CODES.FROYO)
-    public static void Print(String str,int index){
+    public static void Print(String str,String filename){
         String dstDir = getMount_sd();
         //String dstDir = Environment.getExternalStorageDirectory().getPath();
-        File file = new File(dstDir+"/nagara/Seisilog"+index+".csv");
+        File file = new File(dstDir+"/nagara/"+filename+".txt");
         file.getParentFile().mkdir();
 
         try{

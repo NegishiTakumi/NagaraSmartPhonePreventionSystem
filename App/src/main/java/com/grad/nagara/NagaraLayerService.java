@@ -29,9 +29,10 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
-public class NagaraLayerService extends IntentService implements SensorEventListener{
+public class NagaraLayerService extends IntentService implements SensorEventListener,TextToSpeech.OnInitListener{
     public static final String TAG= "__NagaraLayerServiceDebug";
     View mView;
     WindowManager mWindowManager;
@@ -39,12 +40,12 @@ public class NagaraLayerService extends IntentService implements SensorEventList
     LayoutInflater layoutInflater;
     WindowManager.LayoutParams params;
     /*加速度センサー実装のための変数↓*/
+    MainActivity mainActivity;
     AcceleratorManager mAManager;
     LatlngManager mLManager;
     SensorManager sensorManager;
     ClipboardManager clipboardManager;
-    ClipBoardToSpeech clipBoardToSpeech;
-    public static boolean isTest = false;
+    TextToSpeech mTts;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -76,13 +77,14 @@ public class NagaraLayerService extends IntentService implements SensorEventList
         mView = LayoutInflater.from(this).inflate(R.layout.overlay,null);
         TextView textView = (TextView) mView.findViewById(R.id.textView1);
 
-        clipBoardToSpeech = new ClipBoardToSpeech(this.getBaseContext(),this);
+        mTts = new TextToSpeech(this,this);
         clipboardManager = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
         clipboardManager.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
             @Override
             public void onPrimaryClipChanged() {
                 Log.d(TAG, clipboardManager.getText().toString() + "tt");
-                clipBoardToSpeech.ReadStr(clipboardManager.getText().toString());
+                StartSpeech(clipboardManager.getText().toString());
+
             }
         });
 
@@ -116,12 +118,11 @@ public class NagaraLayerService extends IntentService implements SensorEventList
         try {
             unregisterReceiver(broadcastReceiver);
         } catch (IllegalArgumentException e) {
-            if (!isTest) {
-                Log.e(MainActivity.TAG, e.getMessage());
-            }
+
         }
         sensorManager.unregisterListener(this);
-
+        mTts.stop();
+        mTts.shutdown();
 
         if (mWindowManager != null) {
             mWindowManager.removeView(mView);
@@ -142,19 +143,6 @@ public class NagaraLayerService extends IntentService implements SensorEventList
            // intent.putExtra("message",1);
             //intent.setAction("MYACTION");
             //getBaseContext().sendBroadcast(intent);
-            /*
-                for(int i = 0; i<5; i++){
-            Intent broadcastIntent = new Intent();
-            broadcastIntent.putExtra("colorMode", i);
-                Log.d("___",i+"");
-            broadcastIntent.setAction("MY_ACTION");
-            getBaseContext().sendBroadcast(broadcastIntent);
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }        */
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -171,6 +159,7 @@ public class NagaraLayerService extends IntentService implements SensorEventList
             Log.d("_m_a",intent.getAction());
             int mode = intent.getIntExtra("colorMode",R.color.default_color);
             mConfig.setColor(mode);
+
 
             if(intent.getAction().equals("CLIPBOARD_ACTION")){
                 String str = intent.getStringExtra("ClipboardString");
@@ -197,5 +186,31 @@ public class NagaraLayerService extends IntentService implements SensorEventList
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    @Override
+    public void onInit(int status) {
+        // TextToSpeechが使える環境？？
+        if ( status == TextToSpeech.SUCCESS ) {
+            // お話するための言語コードを設定する
+            int result = mTts.setLanguage( Locale.JAPAN );
+            // 対応する言語データがない、または対応外の言語の場合はエラーとする
+            if ( result == TextToSpeech.LANG_MISSING_DATA ||
+                    result == TextToSpeech.LANG_NOT_SUPPORTED ) {
+                // エラーメッセージをログに出力
+            }
+            else {
+            }
+        }
+        // そもそも初期化に失敗していた場合はログ出力
+        else {
+        }
+    }
+
+
+    public void StartSpeech(String speechText){
+        if ( speechText.length() > 0 ) {
+            mTts.speak(speechText, TextToSpeech.QUEUE_FLUSH, null);
+        }
     }
 }

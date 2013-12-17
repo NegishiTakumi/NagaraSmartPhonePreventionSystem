@@ -26,6 +26,7 @@ public class ClipBoardToSpeech extends Activity  implements TextToSpeech.OnInitL
     * ---------------------------------------------*/
     public void ReadStr(String text){
         if(0 < text.length()){
+
             if(mTts.isSpeaking()){mTts.stop();}
             mTts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         }

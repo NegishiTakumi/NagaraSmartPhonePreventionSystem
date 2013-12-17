@@ -47,6 +47,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     private AcceleratorManager a_manager;
     private LatlngManager l_manager;
     private MySVMManager mSVM_manager;
+
     IntentFilter intentFilter;
     NagaraLayerReceiver receiver;
 
@@ -75,6 +76,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             manager = (SensorManager)getSystemService(SENSOR_SERVICE);
             a_manager = new AcceleratorManager(acceValueText,naturalizedText,manager);
             l_manager = new LatlngManager(gpsValueText,distValueText,lm);
+
+            Log.d(TAG, "ctor??");
         }
 
     }
@@ -131,7 +134,6 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             FlipButton();
         }
         if(v==paleButton){
-
         }
     }
     private void SVMTester(){

@@ -1,8 +1,10 @@
 package com.grad.nagara;
 
+import android.annotation.TargetApi;
 import android.app.IntentService;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,8 +14,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.TextureView;
@@ -38,6 +42,8 @@ public class NagaraLayerService extends IntentService implements SensorEventList
     AcceleratorManager mAManager;
     LatlngManager mLManager;
     SensorManager sensorManager;
+    ClipboardManager clipboardManager;
+    ClipBoardToSpeech clipBoardToSpeech;
     public static boolean isTest = false;
 
     /**
@@ -63,12 +69,23 @@ public class NagaraLayerService extends IntentService implements SensorEventList
 
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public int onStartCommand(Intent intent,int flags, int startId){
         super.onStart(intent,startId);
         mView = LayoutInflater.from(this).inflate(R.layout.overlay,null);
-
         TextView textView = (TextView) mView.findViewById(R.id.textView1);
+
+        clipBoardToSpeech = new ClipBoardToSpeech(this.getBaseContext(),this);
+        clipboardManager = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+        clipboardManager.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
+            @Override
+            public void onPrimaryClipChanged() {
+                Log.d(TAG, clipboardManager.getText().toString() + "tt");
+                clipBoardToSpeech.ReadStr(clipboardManager.getText().toString());
+            }
+        });
+
         sensorManager = (SensorManager)getApplicationContext().getSystemService(SENSOR_SERVICE);
         mAManager = new AcceleratorManager(textView,sensorManager,this);
         mAManager.onResume(this);
@@ -115,6 +132,7 @@ public class NagaraLayerService extends IntentService implements SensorEventList
     public IBinder onBind(Intent intent) {
         return null;
     } 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onHandleIntent(Intent intent){
             Log.d(this.TAG,"on Handle Intent called");
@@ -150,9 +168,14 @@ public class NagaraLayerService extends IntentService implements SensorEventList
         @Override
         public void onReceive(Context context, Intent intent) {
 
-
+            Log.d("_m_a",intent.getAction());
             int mode = intent.getIntExtra("colorMode",R.color.default_color);
             mConfig.setColor(mode);
+
+            if(intent.getAction().equals("CLIPBOARD_ACTION")){
+                String str = intent.getStringExtra("ClipboardString");
+
+            }
 
             TextView textView = (TextView)mView.findViewById(R.id.textView1);
             setTextViewColor(textView,mConfig.getColor());

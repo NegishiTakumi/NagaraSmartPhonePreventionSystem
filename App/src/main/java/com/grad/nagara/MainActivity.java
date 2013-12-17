@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.os.Environment;
 import android.provider.Settings;
 //import android.support.v4.widget.SearchViewCompatIcs;
+import android.speech.tts.TextToSpeech;
 import android.text.Layout;
 import android.view.WindowManager.LayoutParams;
 import android.support.v7.app.ActionBar;

@@ -47,14 +47,16 @@ public class NagaraLayerConfig {
 
         switch(colorMode){
             case 0:
-                color = mContext.getResources().getInteger(R.color.bg20); break;
+                color = mContext.getResources().getInteger(R.color.default_color); break;
             case 1:
-                color = mContext.getResources().getInteger(R.color.bg40);break;
+                color = mContext.getResources().getInteger(R.color.bg20); break;
             case 2:
-                color =  mContext.getResources().getInteger(R.color.bg60);break;
+                color = mContext.getResources().getInteger(R.color.bg40);break;
             case 3:
-                color =  mContext.getResources().getInteger(R.color.bg80);break;
+                color =  mContext.getResources().getInteger(R.color.bg60);break;
             case 4:
+                color =  mContext.getResources().getInteger(R.color.bg80);break;
+            case 5:
                 color =  mContext.getResources().getInteger(R.color.bg90);break;
             default:
                 color = mContext.getResources().getInteger(R.color.default_color);break;

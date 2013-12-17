@@ -37,7 +37,7 @@ public class LatlngManager extends Activity {
     public void onResume(MainActivity ma){
         //GPS情報
         locationManager.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER, 5 * 1000, 5, new tLocationListener(ma));
+                LocationManager.NETWORK_PROVIDER, 5 * 1000, 5, new tLocationListener());
     }
 
     //GPSの値を取得するところ。

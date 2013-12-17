@@ -78,7 +78,7 @@ public class AcceleratorManager extends Activity  {
                 if(count2 >=elemcnt){
                     setFeatureValueData(f1,featureValueSet);
                     setFeatureValueData(f2,featureValue2Set);
-             //   nTextView.setText(f1.avr+"\n"+f2.avr);
+
                     if(mNLS != null)
                     setServiceOpacity(count2);
                 }
@@ -153,21 +153,20 @@ public class AcceleratorManager extends Activity  {
     }
 
     /*
-    * 色を変える。*/
-
-private void setServiceOpacity(int cnt){
-    if(cnt % elemcnt == 0 ){
-        if(DecisionTree.isWalk(f2.min,f2.max,f2.var))
-            Opacitystage++;
-        else
-            Opacitystage--;
-        Opacitystage = Opacitystage > 5? 5:
-                Opacitystage < 0? 0 : Opacitystage;
-Log.d("_m_a","Opacity Stage = " + Opacitystage + "");
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.putExtra("colorMode", Opacitystage);
-        broadcastIntent.setAction("MY_ACTION");
-        mNLS.getBaseContext().sendBroadcast(broadcastIntent);
+    * Serviceの色を変える。*/
+    private void setServiceOpacity(int cnt){
+        if(cnt % (elemcnt - (elemcnt/10)*Opacitystage) == 0 ){
+            if(DecisionTree.isWalk(f2.min,f2.max,f2.var))
+                Opacitystage++;
+            else
+                Opacitystage--;
+            Opacitystage = Opacitystage > 5? 5:
+                    Opacitystage < 0? 0 : Opacitystage;
+            Log.d("_m_a","Opacity Stage = " + Opacitystage + "");
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.putExtra("colorMode", Opacitystage);
+            broadcastIntent.setAction("MY_ACTION");
+         mNLS.getBaseContext().sendBroadcast(broadcastIntent);
+        }
     }
-}
  }

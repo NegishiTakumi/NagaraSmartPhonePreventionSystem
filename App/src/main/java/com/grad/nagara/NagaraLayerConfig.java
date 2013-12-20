@@ -11,6 +11,7 @@ import android.util.Log;
 
 public class NagaraLayerConfig {
     public static final String KEY_COLOR = "key_color";
+    public static final String KEY_BACKGROUNG = "key_background";
 
     private Context mContext;
     private SharedPreferences mSharedPreferences;

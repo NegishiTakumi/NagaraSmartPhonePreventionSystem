@@ -17,6 +17,7 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Space;
 import android.widget.TextView;
 
@@ -46,6 +48,7 @@ public class NagaraLayerService extends IntentService implements SensorEventList
     SensorManager sensorManager;
     ClipboardManager clipboardManager;
     TextToSpeech mTts;
+    PowerManager powerManager;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -78,19 +81,12 @@ public class NagaraLayerService extends IntentService implements SensorEventList
         TextView textView = (TextView) mView.findViewById(R.id.textView1);
 
         mTts = new TextToSpeech(this,this);
-        clipboardManager = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
-        clipboardManager.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
-            @Override
-            public void onPrimaryClipChanged() {
-                Log.d(TAG, clipboardManager.getText().toString() + "tt");
-                StartSpeech(clipboardManager.getText().toString());
-
-            }
-        });
 
         sensorManager = (SensorManager)getApplicationContext().getSystemService(SENSOR_SERVICE);
+        powerManager = (PowerManager)getSystemService(POWER_SERVICE);
         mAManager = new AcceleratorManager(textView,sensorManager,this);
         mAManager.onResume(this);
+        mAManager.setPowerManager(powerManager);
         mConfig.setColor(3);
         //int color = mConfig.getColor();
         //Log.d(this.TAG,color+"");
@@ -105,6 +101,25 @@ public class NagaraLayerService extends IntentService implements SensorEventList
 
         mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         mWindowManager.addView(mView, params);
+
+        clipboardManager = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+        clipboardManager.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
+            @Override
+            public void onPrimaryClipChanged() {
+            //もしクリップボードの文字列が替わって、OpacityStageが4以上ならやる。
+                Log.d("__N",mAManager.getOpacityStage()+"%");
+                if(mAManager.getOpacityStage() >=1){
+                    mAManager.setIsShake(false);
+                StartSpeech(clipboardManager.getText().toString());
+                Intent clipBoardIntent = new Intent();
+                clipBoardIntent.putExtra("isClipBoardChanged",true);
+                clipBoardIntent.setAction("CLIPBOARD_CHANGED_ACTION");
+                getBaseContext().sendBroadcast(clipBoardIntent);
+
+            }
+            }
+        });
+
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("MY_ACTION");
@@ -136,7 +151,6 @@ public class NagaraLayerService extends IntentService implements SensorEventList
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onHandleIntent(Intent intent){
-            Log.d(this.TAG,"on Handle Intent called");
            //Update関数と同等の働きをするwhile(true)
             while (true)
             {
@@ -156,18 +170,14 @@ public class NagaraLayerService extends IntentService implements SensorEventList
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            Log.d("_m_a",intent.getAction());
             int mode = intent.getIntExtra("colorMode",R.color.default_color);
             mConfig.setColor(mode);
 
-
-            if(intent.getAction().equals("CLIPBOARD_ACTION")){
-                String str = intent.getStringExtra("ClipboardString");
-
-            }
-
             TextView textView = (TextView)mView.findViewById(R.id.textView1);
-            setTextViewColor(textView,mConfig.getColor());
+            ImageButton imageButton = (ImageButton)mView.findViewById(R.id.imageButton);
+            imageButton.setBackground(getResources().getDrawable(GetBackGround(mode)));
+           setTextViewColor(textView, mConfig.getColor());
+
 
         }
     };
@@ -187,7 +197,24 @@ public class NagaraLayerService extends IntentService implements SensorEventList
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
+    /*画像を返す奴。
+    * --------------------------------------------------------------*/
+    public int GetBackGround(int mode){
+        int BGID = R.drawable.bg00n;
+        switch (mode){
+            case 0: BGID = R.drawable.bg00n;break;
+            case 1: BGID = R.drawable.bg20n;break;
+            case 2: BGID = R.drawable.bg40n;break;
+            case 3: BGID = R.drawable.bg60n;break;
+            case 4: BGID = R.drawable.bg80n;break;
+            case 5: BGID = R.drawable.bg90n;break;
+            case 10:BGID = R.drawable.bgarticle;break;
+            default:BGID = R.drawable.bg00n;break;
+        }
+        return BGID;
+    }    
+     /*【TTS】TTS初期化用
+    * --------------------------------------------------------------*/
     @Override
     public void onInit(int status) {
         // TextToSpeechが使える環境？？
@@ -207,7 +234,8 @@ public class NagaraLayerService extends IntentService implements SensorEventList
         }
     }
 
-
+/*【TTS】引数に与えた文字列を読む。
+* -----------------------------------------------------------------*/
     public void StartSpeech(String speechText){
         if ( speechText.length() > 0 ) {
             mTts.speak(speechText, TextToSpeech.QUEUE_FLUSH, null);

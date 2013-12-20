@@ -12,4 +12,10 @@ public class DecisionTree {
         Log.d(TAG,"featureValue1:" + featureValue1 + "featureValue2 : " + featureValue2 + "featureValue3 : " + featureValue3);
         return (featureValue1 < -25 && featureValue2 > 25 && featureValue3 > 300);
     }
+
+    public static boolean isShake(float[] yDataSet){
+        if(ExCalc.GetArrMax(yDataSet) > 8)
+        return true;
+        return false;
+    }
 }

@@ -8,9 +8,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -21,7 +24,13 @@ public class AcceleratorManager extends Activity  {
     private SensorManager manager;
     int count = 0;//DatalistX,Y,Zの初期化に必要なカウント
     int count2=0;//AcceDatanaturalizedSetの初期化に必要なカウント
+    int count3 = 0;
     int Opacitystage = 0;
+    public int getOpacityStage(){return  Opacitystage;}
+    boolean isShake = false;
+    public boolean getIsShake(){return isShake;}
+    public void setIsShake(boolean value){isShake = value;}
+
     int elemcnt = 100;//配列群の要素数の一括定義
     private float[] dataListX = new float[elemcnt]; private float[] dataListY = new float[elemcnt]; private float[] dataListZ = new float[elemcnt];
     private float[] AcceDataGravity = new float[3];
@@ -29,6 +38,8 @@ public class AcceleratorManager extends Activity  {
     private float[] featureValueSet = new float[elemcnt];
     private float[] featureValue2Set = new float[elemcnt];
     private NagaraLayerService mNLS;
+    public PowerManager powerManager;
+    public void setPowerManager(PowerManager p){powerManager = p;}
     FeatureValue f1 = new FeatureValue();
     FeatureValue f2 = new FeatureValue();
 
@@ -37,6 +48,7 @@ public class AcceleratorManager extends Activity  {
         textView = acceTv; //加速度を書くTextViewをセット
         this.manager = manager;
         this.mNLS = nls;
+
     }
 
     public AcceleratorManager(TextView acceTv,TextView nTv,SensorManager manager){
@@ -64,8 +76,8 @@ public class AcceleratorManager extends Activity  {
                     "\nY軸："+sensorEvent.values[SensorManager.DATA_Y]+
                     "\nZ軸："+sensorEvent.values[SensorManager.DATA_Z]+
                     "\ncount="+count+"\ncount2="+count2;
-            textView.setText(str);//dataListX[0]+"\n"+dataListX[99]
-
+            textView.setText(str);
+            if(isShake == false){
             //datalistXYZに値を格納する。
             RawAcceDataSetUpdate(rx, ry, rz, count);
             //datalistの値を格納終了したことからV_gとV_nを計算できるようになるので、それを計算する。
@@ -79,13 +91,19 @@ public class AcceleratorManager extends Activity  {
                     setFeatureValueData(f1,featureValueSet);
                     setFeatureValueData(f2,featureValue2Set);
 
-                    if(mNLS != null)
-                    setServiceOpacity(count2);
+                    if(mNLS != null){
+                    setServiceOpacity(count2,mNLS);
+                    OpacityInit();
+                        if(count2-100> count3 && Opacitystage >=4)
+                        ShakeEventHandle();
+                    }
                 }
                 count2++;
             }
-        }
+
         count++;
+            }
+        }
     }
     /*XYZ軸それぞれの加速度の生データを更新する。
     * ---------------------------------------------------------------------*/
@@ -154,7 +172,7 @@ public class AcceleratorManager extends Activity  {
 
     /*
     * Serviceの色を変える。*/
-    private void setServiceOpacity(int cnt){
+    private void setServiceOpacity(int cnt,NagaraLayerService nls){
         if(cnt % (elemcnt - (elemcnt/10)*Opacitystage) == 0 ){
             if(DecisionTree.isWalk(f2.min,f2.max,f2.var))
                 Opacitystage++;
@@ -163,10 +181,42 @@ public class AcceleratorManager extends Activity  {
             Opacitystage = Opacitystage > 5? 5:
                     Opacitystage < 0? 0 : Opacitystage;
             Log.d("_m_a","Opacity Stage = " + Opacitystage + "");
+
             Intent broadcastIntent = new Intent();
             broadcastIntent.putExtra("colorMode", Opacitystage);
             broadcastIntent.setAction("MY_ACTION");
-         mNLS.getBaseContext().sendBroadcast(broadcastIntent);
+            nls.getBaseContext().sendBroadcast(broadcastIntent);
+
         }
+    }
+    private void ShakeEventHandle(){
+        count3 = count2;
+        float[] tmp = new float[10];
+        System.arraycopy(dataListX,0,tmp,0,10);
+        isShake = DecisionTree.isShake(tmp);
+        if(isShake){
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.putExtra("colorMode",10);
+            broadcastIntent.setAction("MY_ACTION");
+            mNLS.getBaseContext().sendBroadcast(broadcastIntent);
+        }
+        Log.d("__Acce",isShake + "で");
+    }
+
+    /* 電源を切った時全てを初期化する。
+    * ------------------------------------------------------------------------*/
+    private void OpacityInit(){
+        if(!powerManager.isScreenOn()){
+            if(Opacitystage > 1){
+                Intent broadcastIntent = new Intent();
+                broadcastIntent.putExtra("colorMode", 0);
+                broadcastIntent.setAction("MY_ACTION");
+                mNLS.getBaseContext().sendBroadcast(broadcastIntent);
+            }
+            Opacitystage = 0;
+            isShake = false;
+
+        }
+        Log.d("_m_a",powerManager.isScreenOn()+"/OpacityStage^"+Opacitystage );
     }
  }

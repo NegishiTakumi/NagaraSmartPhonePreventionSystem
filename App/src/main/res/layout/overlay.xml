@@ -5,17 +5,25 @@
     android:layout_height="wrap_content"
     android:layout_gravity="fill"
     android:orientation="vertical"
-    android:gravity="fill">
+    android:gravity="fill_vertical|fill_horizontal"
+    android:weightSum="1">
     <!--"@drawable/bg80"-->
+
+
 
     <TextView
         android:id="@+id/textView1"
-        android:layout_width="689dp"
-        android:layout_height="591dp"
+        android:layout_width="175dp"
+        android:layout_height="103dp"
         android:text="           ながらスマートフォン検出中"
         android:textSize="32px"
-        android:background="@color/default_color"
-        android:gravity="fill_horizontal|fill_vertical" />
+        android:background="@color/default_color" />
+
+    <ImageButton
+        android:layout_width="172dp"
+        android:layout_height="212dp"
+        android:id="@+id/imageButton"
+        android:layout_gravity="right" />
 
 
 </LinearLayout>

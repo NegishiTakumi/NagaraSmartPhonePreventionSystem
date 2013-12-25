@@ -25,9 +25,10 @@ public class DecisionTree {
         return count >= (zDataSet.length/8) -1;
     }
 
-    public static boolean isShake(float[] yDataSet){
-        if(ExCalc.GetArrMax(yDataSet) > 8)
-        return true;
-        return false;
+    public static boolean isShake(float[] xDataSet){
+       float t1 = ExCalc.GetArrMax(xDataSet);
+        float t2 = ExCalc.GetArrMin(xDataSet);
+        return (t1>6 &&t2<-6);
+
     }
 }

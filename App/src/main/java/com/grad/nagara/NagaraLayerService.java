@@ -108,14 +108,15 @@ public class NagaraLayerService extends IntentService implements SensorEventList
             public void onPrimaryClipChanged() {
             //もしクリップボードの文字列が替わって、OpacityStageが4以上ならやる。
                 Log.d("__N",mAManager.getOpacityStage()+"%");
-                if(mAManager.getOpacityStage() >=1){
-                    mAManager.setIsShake(false);
+                if(mAManager.getOpacityStage() >=4){
+
                 StartSpeech(clipboardManager.getText().toString());
                 Intent clipBoardIntent = new Intent();
                 clipBoardIntent.putExtra("isClipBoardChanged",true);
                 clipBoardIntent.setAction("CLIPBOARD_CHANGED_ACTION");
                 getBaseContext().sendBroadcast(clipBoardIntent);
-
+                    mAManager.setIsShake(false);
+                Log.d("__D","SpeechStart");
             }
             }
         });
@@ -238,7 +239,8 @@ public class NagaraLayerService extends IntentService implements SensorEventList
 * -----------------------------------------------------------------*/
     public void StartSpeech(String speechText){
         if ( speechText.length() > 0 ) {
-            mTts.speak(speechText, TextToSpeech.QUEUE_FLUSH, null);
+            mTts.speak(speechText, TextToSpeech.QUEUE_ADD, null);
+            Log.d("__D","isLog?");
         }
     }
 }

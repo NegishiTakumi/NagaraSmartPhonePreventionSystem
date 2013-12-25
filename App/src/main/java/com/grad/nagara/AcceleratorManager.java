@@ -170,8 +170,8 @@ public class AcceleratorManager extends Activity  {
         return null;
     }
 
-    public float[] getDataListZ(){
-        return dataListZ;
+    public float[] getDataListX(){
+        return dataListX;
     }
     public float[] getAcceDataNaturalized(){
         return AcceDataNaturalized;
@@ -198,23 +198,24 @@ public class AcceleratorManager extends Activity  {
     }
     private void ShakeEventHandle(){
         count3 = count2;
-        float[] tmp = new float[10];
-        System.arraycopy(dataListX,0,tmp,0,10);
+        float[] tmp = new float[20];
+        System.arraycopy(dataListX,0,tmp,0,20);
         isShake = DecisionTree.isShake(tmp);
+        Log.d("__Acce",isShake + "で");
         if(isShake){
             Intent broadcastIntent = new Intent();
             broadcastIntent.putExtra("colorMode",10);
             broadcastIntent.setAction("MY_ACTION");
             mNLS.getBaseContext().sendBroadcast(broadcastIntent);
         }
-        Log.d("__Acce",isShake + "で");
+
     }
 
     /* 電源を切った時全てを初期化する。
     * ------------------------------------------------------------------------*/
     private void OpacityInit(){
         if(!powerManager.isScreenOn()){
-            if(Opacitystage > 1){
+            if(Opacitystage > 0){
                 Intent broadcastIntent = new Intent();
                 broadcastIntent.putExtra("colorMode", 0);
                 broadcastIntent.setAction("MY_ACTION");

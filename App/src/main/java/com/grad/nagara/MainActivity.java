@@ -134,8 +134,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             FlipButton();
         }
         if(v==paleButton){
-            for(int i = 0; i <a_manager.getDataListX().length; i++){
-            Debugger.Print(a_manager.getDataListX()[i] + "\n","xData");
+            for(int i = 0; i <a_manager.getNaturalizedZDataSet().length; i++){
+            Debugger.Print(a_manager.getNaturalizedZDataSet()[i] + "\n","znatuData");
             }
             Debugger.Print("\n/\n","zData");
         }

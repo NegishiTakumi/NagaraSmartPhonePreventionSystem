@@ -35,6 +35,7 @@ public class AcceleratorManager extends Activity  {
     private float[] dataListX = new float[elemcnt]; private float[] dataListY = new float[elemcnt]; private float[] dataListZ = new float[elemcnt];
     private float[] AcceDataGravity = new float[3];
     private float[] AcceDataNaturalized = new float[3];
+    private float[] naturalizedZDataSet = new float[elemcnt];
     private float[] featureValueSet = new float[elemcnt];
     private float[] featureValue2Set = new float[elemcnt];
     private NagaraLayerService mNLS;
@@ -84,6 +85,7 @@ public class AcceleratorManager extends Activity  {
             if(count >= elemcnt){
                 AcceDataGravity = GetAcceDataGravityUpdate();
                 AcceDataNaturalized = GetAcceDataNaturalizedUpdate();
+                GetnaturalizedZDataSetUpdate(AcceDataNaturalized[2],count2);
                 //特徴量の値を計算してfeatureValueSet(float型)に格納する。そしてあふれた場合更新する。
                 FeatureResourceDataUpdate(AcceDataGravity,AcceDataNaturalized,count2);
                 //特徴量の集合があふれるようになったとき、特徴量の平均、最大、分散、最小を計算できるようになるので、これをf1,f2に格納する。
@@ -119,6 +121,16 @@ public class AcceleratorManager extends Activity  {
             dataListZ = ExCalc.InsertArrFirst(z,dataListZ);
         }
     }
+    /*正規化したZ軸のデータ
+* ----------------------------------------------------------*/
+    private void GetnaturalizedZDataSetUpdate(float nData,int cnt){
+        if(cnt < elemcnt){
+            naturalizedZDataSet[cnt]  = nData;
+        }
+        else {
+            naturalizedZDataSet = ExCalc.InsertArrFirst(nData,naturalizedZDataSet);
+        }
+    }
     /*float型の特徴量(||V_n||とV_n*V_g)を計算し、それを特徴量の集合(float型)として更新する。
     * ----------------------------------------------------------*/
     private void FeatureResourceDataUpdate(float[] vn,float[] vg,int cnt){
@@ -132,8 +144,8 @@ public class AcceleratorManager extends Activity  {
             featureValueSet = ExCalc.InsertArrFirst(temp,featureValueSet);
             featureValue2Set = ExCalc.InsertArrFirst(temp2,featureValue2Set);
         }
-
     }
+
     /*重力としてXYZそれぞれの平均値を取得する。それを配列として返す。
     * -----------------------------------------------------------*/
     private float[] GetAcceDataGravityUpdate(){
@@ -173,6 +185,9 @@ public class AcceleratorManager extends Activity  {
     public float[] getDataListX(){
         return dataListX;
     }
+    public float[] getNaturalizedZDataSet(){
+        return naturalizedZDataSet;
+    }
     public float[] getAcceDataNaturalized(){
         return AcceDataNaturalized;
     }
@@ -181,7 +196,7 @@ public class AcceleratorManager extends Activity  {
     * Serviceの色を変える。*/
     private void setServiceOpacity(int cnt,NagaraLayerService nls){
         if(cnt % (elemcnt - (elemcnt/10)*Opacitystage) == 0 ){
-            if(DecisionTree.isWalk(dataListZ))
+            if(DecisionTree.isWalk(naturalizedZDataSet))
                 Opacitystage++;
             else
                 Opacitystage--;

@@ -16,7 +16,7 @@ public class DecisionTree {
     public static boolean isWalk(float[] zDataSet){
         int count = 0;
         for(int i = 0; i<zDataSet.length; i++){
-            if(zDataSet[i] > 11){
+            if(zDataSet[i] > 2){
                 count++;
                 i = i<zDataSet.length -3 ? i+3 : zDataSet.length;
             }

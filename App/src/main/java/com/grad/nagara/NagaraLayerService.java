@@ -116,7 +116,6 @@ public class NagaraLayerService extends IntentService implements SensorEventList
                 clipBoardIntent.setAction("CLIPBOARD_CHANGED_ACTION");
                 getBaseContext().sendBroadcast(clipBoardIntent);
                     mAManager.setIsShake(false);
-                Log.d("__D","SpeechStart");
             }
             }
         });

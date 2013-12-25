@@ -170,11 +170,18 @@ public class AcceleratorManager extends Activity  {
         return null;
     }
 
+    public float[] getDataListZ(){
+        return dataListZ;
+    }
+    public float[] getAcceDataNaturalized(){
+        return AcceDataNaturalized;
+    }
+
     /*
     * Serviceの色を変える。*/
     private void setServiceOpacity(int cnt,NagaraLayerService nls){
         if(cnt % (elemcnt - (elemcnt/10)*Opacitystage) == 0 ){
-            if(DecisionTree.isWalk(f2.min,f2.max,f2.var))
+            if(DecisionTree.isWalk(dataListZ))
                 Opacitystage++;
             else
                 Opacitystage--;

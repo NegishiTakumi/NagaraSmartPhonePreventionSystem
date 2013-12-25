@@ -74,7 +74,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             paleButton = (Button)findViewById(R.id.paleButton);
             paleButton.setOnClickListener(this);
             manager = (SensorManager)getSystemService(SENSOR_SERVICE);
-           // a_manager = new AcceleratorManager(acceValueText,naturalizedText,manager);
+            a_manager = new AcceleratorManager(acceValueText,naturalizedText,manager);
             l_manager = new LatlngManager(gpsValueText,distValueText,lm);
 
             Log.d(TAG, "ctor??");
@@ -88,13 +88,13 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     @Override
     public void onResume(){
         super.onResume();
-      //  a_manager.onResume(this);
+        a_manager.onResume(this);
        // l_manager.onResume(this);
     }
 
     @Override//SensorEventListener
     public void onSensorChanged(SensorEvent sensorEvent) {
-      //  a_manager.onAcceleratorSensorChanged(sensorEvent);
+        a_manager.onAcceleratorSensorChanged(sensorEvent);
     }
 
     @Override//SensorEventListener
@@ -134,6 +134,10 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             FlipButton();
         }
         if(v==paleButton){
+            for(int i = 0; i <a_manager.getDataListZ().length; i++){
+            Debugger.Print(a_manager.getDataListZ()[i] + "\n","zData");
+            }
+            Debugger.Print("\n/\n","zData");
         }
     }
     private void SVMTester(){

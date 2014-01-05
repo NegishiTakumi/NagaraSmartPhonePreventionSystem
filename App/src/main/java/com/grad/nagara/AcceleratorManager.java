@@ -12,6 +12,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +27,8 @@ public class AcceleratorManager extends Activity  {
     int count2=0;//AcceDatanaturalizedSetの初期化に必要なカウント
     int count3 = 0;
     int Opacitystage = 0;
+    public static int MODE = 0;
+    public static Context mContext = null;
     public int getOpacityStage(){return  Opacitystage;}
     boolean isShake = false;
     public boolean getIsShake(){return isShake;}
@@ -44,9 +47,13 @@ public class AcceleratorManager extends Activity  {
     FeatureValue f1 = new FeatureValue();
     FeatureValue f2 = new FeatureValue();
 
+    public AcceleratorManager(SensorManager manager, NagaraLayerService nls){
+        this.manager = manager;
+        this.mNLS = nls;
+    }
 
     public AcceleratorManager(TextView acceTv,SensorManager manager, NagaraLayerService nls){
-        textView = acceTv; //加速度を書くTextViewをセット
+       // textView = acceTv; //加速度を書くTextViewをセット
         this.manager = manager;
         this.mNLS = nls;
 
@@ -77,6 +84,7 @@ public class AcceleratorManager extends Activity  {
                     "\nY軸："+sensorEvent.values[SensorManager.DATA_Y]+
                     "\nZ軸："+sensorEvent.values[SensorManager.DATA_Z]+
                     "\ncount="+count+"\ncount2="+count2;
+            if(textView != null)
             textView.setText(str);
             if(isShake == false){
             //datalistXYZに値を格納する。
@@ -94,10 +102,7 @@ public class AcceleratorManager extends Activity  {
                     setFeatureValueData(f2,featureValue2Set);
 
                     if(mNLS != null){
-                    setServiceOpacity(count2,mNLS);
-                    OpacityInit();
-                        if(count2-100> count3 && Opacitystage >=4)
-                        ShakeEventHandle();
+                        DivideMode(MODE);
                     }
                 }
                 count2++;
@@ -107,6 +112,71 @@ public class AcceleratorManager extends Activity  {
             }
         }
     }
+    private void DivideMode(int mode){
+        switch (mode){
+            case 0:
+                WarningToast(count2);
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                setServiceOpacity(count2,mNLS);
+                OpacityInit();
+                if(count2-100> count3 && Opacitystage >=4)
+                    ShakeEventHandle();
+                break;
+            default:return;
+        }
+    }
+
+    private void WarningToast(int cnt){
+        if(cnt % elemcnt == 0 )
+        if(DecisionTree.isWalk(naturalizedZDataSet,dataListY)){
+            Toast.makeText(mContext,"ながらスマートフォンを検出しました。\n危険なのでやめましょう。",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void Warning10Stop(){
+
+    }
+
+
+    /*
+    * Serviceの色を変える。*/
+    private void setServiceOpacity(int cnt,NagaraLayerService nls){
+        if(cnt % (elemcnt - (elemcnt/10)*Opacitystage) == 0 ){
+            if(DecisionTree.isWalk(naturalizedZDataSet,dataListY))
+                Opacitystage++;
+            else
+                Opacitystage--;
+            Opacitystage = Opacitystage > 5? 5:
+                    Opacitystage < 0? 0 : Opacitystage;
+            Log.d("_m_a","Opacity Stage = " + Opacitystage + "");
+
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.putExtra("colorMode", Opacitystage);
+            broadcastIntent.setAction("MY_ACTION");
+            nls.getBaseContext().sendBroadcast(broadcastIntent);
+
+        }
+    }
+    private void ShakeEventHandle(){
+        count3 = count2;
+        float[] tmp = new float[20];
+        System.arraycopy(dataListX,0,tmp,0,20);
+        isShake = DecisionTree.isShake(tmp);
+        Log.d("__Acce",isShake + "で");
+        if(isShake){
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.putExtra("colorMode",10);
+            broadcastIntent.setAction("MY_ACTION");
+            mNLS.getBaseContext().sendBroadcast(broadcastIntent);
+        }
+
+    }
+
     /*XYZ軸それぞれの加速度の生データを更新する。
     * ---------------------------------------------------------------------*/
     private void RawAcceDataSetUpdate(float x,float y,float z,int cnt){
@@ -182,8 +252,8 @@ public class AcceleratorManager extends Activity  {
         return null;
     }
 
-    public float[] getDataListX(){
-        return dataListX;
+    public float[] getDataListZ(){
+        return dataListZ;
     }
     public float[] getNaturalizedZDataSet(){
         return naturalizedZDataSet;
@@ -192,39 +262,6 @@ public class AcceleratorManager extends Activity  {
         return AcceDataNaturalized;
     }
 
-    /*
-    * Serviceの色を変える。*/
-    private void setServiceOpacity(int cnt,NagaraLayerService nls){
-        if(cnt % (elemcnt - (elemcnt/10)*Opacitystage) == 0 ){
-            if(DecisionTree.isWalk(naturalizedZDataSet))
-                Opacitystage++;
-            else
-                Opacitystage--;
-            Opacitystage = Opacitystage > 5? 5:
-                    Opacitystage < 0? 0 : Opacitystage;
-            Log.d("_m_a","Opacity Stage = " + Opacitystage + "");
-
-            Intent broadcastIntent = new Intent();
-            broadcastIntent.putExtra("colorMode", Opacitystage);
-            broadcastIntent.setAction("MY_ACTION");
-            nls.getBaseContext().sendBroadcast(broadcastIntent);
-
-        }
-    }
-    private void ShakeEventHandle(){
-        count3 = count2;
-        float[] tmp = new float[20];
-        System.arraycopy(dataListX,0,tmp,0,20);
-        isShake = DecisionTree.isShake(tmp);
-        Log.d("__Acce",isShake + "で");
-        if(isShake){
-            Intent broadcastIntent = new Intent();
-            broadcastIntent.putExtra("colorMode",10);
-            broadcastIntent.setAction("MY_ACTION");
-            mNLS.getBaseContext().sendBroadcast(broadcastIntent);
-        }
-
-    }
 
     /* 電源を切った時全てを初期化する。
     * ------------------------------------------------------------------------*/

@@ -29,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.grad.nagara.libsvm.svm;
@@ -38,16 +39,14 @@ import java.util.*;
 import static android.provider.Settings.*;
 
 public class MainActivity extends ActionBarActivity implements SensorEventListener,View.OnClickListener{
-    public static String TAG = "_m_MainActivity";
-    public static int MODE = 2;
-    private TextView acceValueText,gpsValueText,distValueText,naturalizedText;
+    public static String TAG = "__MainActivity";
+    private TextView levelTextView;
     private Button dbButton,stopButton,paleButton;
     private LocationManager lm;
     private SensorManager manager;
     private AcceleratorManager a_manager;
     private LatlngManager l_manager;
-    private MySVMManager mSVM_manager;
-
+    private SeekBar seekBar;
     IntentFilter intentFilter;
     NagaraLayerReceiver receiver;
 
@@ -62,22 +61,34 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     .commit();
         }
         {
-            lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-            gpsValueText = (TextView)findViewById(R.id.gpsTextView);
-            acceValueText = (TextView)findViewById(R.id.acceTextView);
-            distValueText = (TextView)findViewById(R.id.distTextView);
-            naturalizedText = (TextView)findViewById(R.id.NatralizedTextView);
+            levelTextView = (TextView)findViewById(R.id.levelTextView);
             dbButton = (Button)findViewById(R.id.debugButton);
             dbButton.setOnClickListener(this);
             stopButton = (Button)findViewById(R.id.StopButton);
             stopButton.setOnClickListener(this);
-            paleButton = (Button)findViewById(R.id.paleButton);
-            paleButton.setOnClickListener(this);
             manager = (SensorManager)getSystemService(SENSOR_SERVICE);
-            a_manager = new AcceleratorManager(acceValueText,naturalizedText,manager);
-            l_manager = new LatlngManager(gpsValueText,distValueText,lm);
+            AcceleratorManager.mContext = this.getBaseContext();
 
-            Log.d(TAG, "ctor??");
+            //被験者実験用
+            seekBar = (SeekBar)findViewById(R.id.seekBar);
+            seekBar.setMax(3);
+            seekBar.setProgress(0);
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    levelTextView.setText("MODE" + String.valueOf(seekBar.getProgress()));
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    AcceleratorManager.MODE = seekBar.getProgress();
+                }
+            });
         }
 
     }
@@ -88,7 +99,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     @Override
     public void onResume(){
         super.onResume();
-        a_manager.onResume(this);
+       // a_manager.onResume(this);
        // l_manager.onResume(this);
     }
 
@@ -134,10 +145,10 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             FlipButton();
         }
         if(v==paleButton){
-            for(int i = 0; i <a_manager.getNaturalizedZDataSet().length; i++){
-            Debugger.Print(a_manager.getNaturalizedZDataSet()[i] + "\n","znatuData");
+            for(int i = 0; i <a_manager.getDataListZ().length; i++){
+            Debugger.Print(a_manager.getDataListZ()[i] + "\n","zDataEX");
             }
-            Debugger.Print("\n/\n","zData");
+            Debugger.Print("\n\n","zDataEX");
         }
     }
     private void SVMTester(){
@@ -164,7 +175,6 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 //        Log.d("_m_a",mSVM_manager.getAccuration() + "");
 
     }
-
     private void RecordData(){
         int classIndex = 2;
         String str = classIndex + " ";

@@ -4,55 +4,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.grad.nagara.MainActivity"
-    android:background="@color/bg20"
+    android:background="@drawable/bg20n"
     tools:ignore="MergeRootFrame" >
 
-    <TextView
+    <![CDATA[
+
+    TextView
         android:layout_width="110dp"
         android:layout_height="146dp"
         android:text="GPS"
         android:id="@+id/gpsTextView"
         android:layout_gravity="left|top" />
 
-    <TextView
+    TextView
         android:layout_width="105dp"
         android:layout_height="145dp"
         android:text="New Text"
         android:id="@+id/distTextView"
         android:layout_gravity="center_horizontal|top" />
 
-    <TextView
-        android:layout_width="168dp"
-        android:layout_height="146dp"
-        android:text="New Text"
-        android:id="@+id/acceTextView"
+
+
+
+
+    ]]>
+
+    TextView
+        android:layout_width="247dp"
+        android:layout_height="123dp"
+        android:text="危険です。ながらスマートフォン"
+        android:id="@+id/NatralizedTextView"
+        android:layout_gravity="center_horizontal|top" />
+
+    <Button
+        android:layout_width="175dp"
+        android:layout_height="97dp"
+        android:text="ながらスマホ検知ストップ"
+        android:id="@+id/StopButton"
+        android:layout_gravity="right|center_vertical" />
+
+    <Button
+        android:layout_width="175dp"
+        android:layout_height="101dp"
+        android:text="ながらスマホ検知スタート"
+        android:id="@+id/debugButton"
         android:layout_gravity="left|center_vertical" />
 
     <TextView
-        android:layout_width="115dp"
-        android:layout_height="153dp"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
         android:text="New Text"
-        android:id="@+id/NatralizedTextView"
-        android:layout_gravity="center" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop"
-        android:id="@+id/StopButton"
-        android:layout_gravity="left|bottom" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start"
-        android:id="@+id/debugButton"
+        android:id="@+id/levelTextView"
         android:layout_gravity="right|bottom" />
 
-    <Button
-        android:layout_width="wrap_content"
+    <SeekBar
+        android:layout_width="321dp"
         android:layout_height="wrap_content"
-        android:text="Random"
-        android:id="@+id/paleButton"
-        android:layout_gravity="center_horizontal|bottom" />
-    </FrameLayout>
+        android:id="@+id/seekBar"
+        android:layout_gravity="left|bottom" />
+</FrameLayout>

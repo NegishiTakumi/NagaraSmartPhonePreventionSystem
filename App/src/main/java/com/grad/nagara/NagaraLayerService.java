@@ -27,6 +27,8 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Space;
 import android.widget.TextView;
 
@@ -63,14 +65,6 @@ public class NagaraLayerService extends IntentService implements SensorEventList
         super.onCreate();
         mConfig = new NagaraLayerConfig(getApplicationContext());
 
-        /*
-        List<Sensor> sensors = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
-        Sensor sensor = sensors.get(0);
-        if(sensors.size() > 0){
-            sensorManager.registerListener((SensorEventListener)this,sensor,SensorManager.SENSOR_DELAY_UI);
-        }
-        */
-
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -78,13 +72,13 @@ public class NagaraLayerService extends IntentService implements SensorEventList
     public int onStartCommand(Intent intent,int flags, int startId){
         super.onStart(intent,startId);
         mView = LayoutInflater.from(this).inflate(R.layout.overlay,null);
-        TextView textView = (TextView) mView.findViewById(R.id.textView1);
+      //  TextView textView = (TextView) mView.findViewById(R.id.textView1);
 
         mTts = new TextToSpeech(this,this);
 
         sensorManager = (SensorManager)getApplicationContext().getSystemService(SENSOR_SERVICE);
         powerManager = (PowerManager)getSystemService(POWER_SERVICE);
-        mAManager = new AcceleratorManager(textView,sensorManager,this);
+        mAManager = new AcceleratorManager(sensorManager,this);
         mAManager.onResume(this);
         mAManager.setPowerManager(powerManager);
         mConfig.setColor(3);
@@ -102,6 +96,7 @@ public class NagaraLayerService extends IntentService implements SensorEventList
         mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         mWindowManager.addView(mView, params);
 
+        Log.d(TAG,mAManager.MODE + "");
         clipboardManager = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
         clipboardManager.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
             @Override
@@ -172,11 +167,8 @@ public class NagaraLayerService extends IntentService implements SensorEventList
 
             int mode = intent.getIntExtra("colorMode",R.color.default_color);
             mConfig.setColor(mode);
-
-            TextView textView = (TextView)mView.findViewById(R.id.textView1);
-            ImageButton imageButton = (ImageButton)mView.findViewById(R.id.imageButton);
-            imageButton.setBackground(getResources().getDrawable(GetBackGround(mode)));
-           setTextViewColor(textView, mConfig.getColor());
+            ImageView imageView = (ImageView)mView.findViewById(R.id.imageView);
+            imageView.setBackground(getResources().getDrawable(GetBackGround(mode)));
 
 
         }
@@ -202,14 +194,14 @@ public class NagaraLayerService extends IntentService implements SensorEventList
     public int GetBackGround(int mode){
         int BGID = R.drawable.bg00n;
         switch (mode){
-            case 0: BGID = R.drawable.bg00n;break;
-            case 1: BGID = R.drawable.bg20n;break;
-            case 2: BGID = R.drawable.bg40n;break;
-            case 3: BGID = R.drawable.bg60n;break;
-            case 4: BGID = R.drawable.bg80n;break;
-            case 5: BGID = R.drawable.bg90n;break;
-            case 10:BGID = R.drawable.bgarticle;break;
-            default:BGID = R.drawable.bg00n;break;
+            case 0: BGID = R.drawable.bg00g;break;
+            case 1: BGID = R.drawable.bg20g;break;
+            case 2: BGID = R.drawable.bg40g;break;
+            case 3: BGID = R.drawable.bg60g;break;
+            case 4: BGID = R.drawable.bg80g;break;
+            case 5: BGID = R.drawable.bg90g;break;
+            case 10:BGID = R.drawable.bgarticleg;break;
+            default:BGID = R.drawable.bg00g;break;
         }
         return BGID;
     }    
